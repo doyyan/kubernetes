@@ -4,7 +4,7 @@ ENV CGO_ENABLED="0" GOOS="linux" GOARCH="amd64"
 
 WORKDIR /build
 
-ADD . /build
+ADD .. /build
 
 RUN go build -o ports .
 
