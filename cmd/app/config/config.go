@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -11,10 +12,11 @@ type Config struct {
 	DBUSER     string `mapstructure:"PGUSER"`
 	DBPASSWORD string `mapstructure:"PGPASSWORD"`
 	DBNAME     string `mapstructure:"PGDB"`
+	ADDRESS    string `mapstructure:"ADDRESS"`
 }
 
 // LoadConfig reads configuration from file or environment variables.
-func LoadConfig(path string) (config Config, err error) {
+func LoadConfig(path string, logger *logrus.Logger) (config Config, err error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
@@ -23,6 +25,7 @@ func LoadConfig(path string) (config Config, err error) {
 
 	err = viper.ReadInConfig()
 	if err != nil {
+		logger.Error(err.Error())
 		return
 	}
 

@@ -4,17 +4,22 @@ import (
 	"log"
 
 	"github.com/doyyan/kubernetes/cmd/app/config"
-	"github.com/doyyan/kubernetes/internal/app/adapter"
+	"github.com/doyyan/kubernetes/internal/app/adapter/controller"
 	"github.com/doyyan/kubernetes/internal/app/adapter/postgresql"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	config, err := config.LoadConfig(".")
-	postgresql.CreateDBConnection(config)
-	r := adapter.Router()
+	// create a new logger for cross application logging
+	logger := logrus.New()
+	config, err := config.LoadConfig(".", logger)
+	if err = postgresql.CreateDBConnection(config, logger); err != nil {
+		logger.Fatal(err)
+	}
+	c := controller.Controller{logger}
+	r := c.Router()
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
-
-	r.Run(":8080")
+	r.Run(config.ADDRESS)
 }

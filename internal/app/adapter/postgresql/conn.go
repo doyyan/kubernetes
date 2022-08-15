@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/doyyan/kubernetes/cmd/app/config"
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,7 +13,7 @@ import (
 var dbconn *gorm.DB
 
 // CreateDBConnection Connection gets connection of postgresql database
-func CreateDBConnection(config config.Config) {
+func CreateDBConnection(config config.Config, logger *logrus.Logger) error {
 	host := config.DBHOST
 	user := config.DBUSER
 	pass := config.DBPASSWORD
@@ -20,7 +21,8 @@ func CreateDBConnection(config config.Config) {
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%s", host, user, pass, dbname)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		logger.Error(err)
+		return err
 	}
 	dbconn = db
 
@@ -28,6 +30,7 @@ func CreateDBConnection(config config.Config) {
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
+	return nil
 }
 
 // GetDB returns a pre-initialised DB connection

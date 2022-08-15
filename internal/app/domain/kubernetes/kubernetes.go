@@ -1,8 +1,8 @@
-package repository
+package kubernetes
 
 import "github.com/doyyan/kubernetes/internal/app/domain"
 
-type IDeploymentRepo interface {
+type IDeploymentK8S interface {
 	Get(domain.Deployment) (domain.Deployment, error)
 	Create(deployment domain.Deployment) error
 	List() ([]domain.Deployment, error)
