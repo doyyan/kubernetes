@@ -19,10 +19,17 @@ func (d Deployment) Create(ctx context.Context, logger *logrus.Logger, deploymen
 		return err
 	}
 	db := postgresql.GetDB()
+	var labelkeys []string
+	var labelvalues []string
+	for k, v := range deployment.Labels {
+		labelkeys = append(labelkeys, k)
+		labelvalues = append(labelvalues, v)
+	}
 	dep := model.Deployment{
 		Name:          deployment.Name,
 		NameSpace:     deployment.Namespace,
-		Labels:        deployment.Labels,
+		LabelKeys:     labelkeys,
+		LabelValues:   labelvalues,
 		Image:         deployment.Image,
 		ContainerPort: deployment.ContainerPort,
 		ContainerName: deployment.ContainerName,
