@@ -4,6 +4,7 @@ import (
 	"github.com/doyyan/kubernetes/internal/app/adapter/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/net/context"
 )
 
 var (
@@ -11,7 +12,8 @@ var (
 )
 
 type Controller struct {
-	Logger *logrus.Logger
+	Context context.Context
+	Logger  *logrus.Logger
 }
 
 func (ctrl Controller) Router() *gin.Engine {

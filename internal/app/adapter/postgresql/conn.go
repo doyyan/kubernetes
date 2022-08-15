@@ -6,6 +6,7 @@ import (
 
 	"github.com/doyyan/kubernetes/cmd/app/config"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/net/context"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -13,7 +14,7 @@ import (
 var dbconn *gorm.DB
 
 // CreateDBConnection Connection gets connection of postgresql database
-func CreateDBConnection(config config.Config, logger *logrus.Logger) error {
+func CreateDBConnection(ctx context.Context, config config.Config, logger *logrus.Logger) error {
 	host := config.DBHOST
 	user := config.DBUSER
 	pass := config.DBPASSWORD
@@ -25,7 +26,6 @@ func CreateDBConnection(config config.Config, logger *logrus.Logger) error {
 		return err
 	}
 	dbconn = db
-
 	sqlDB, err := dbconn.DB()
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)

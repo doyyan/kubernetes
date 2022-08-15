@@ -16,16 +16,19 @@ func (ctrl Controller) createDeployment(c *gin.Context) {
 		return
 	}
 	dep := valueObject.Deployment{
-		Namespace: deployment.NameSpace,
-		Name:      deployment.Name,
-		Labels:    deployment.Labels,
-		Replicas:  deployment.Replicas,
+		Namespace:     deployment.NameSpace,
+		Name:          deployment.Name,
+		ContainerPort: deployment.ContainerPort,
+		ContainerName: deployment.ContainerName,
+		Image:         deployment.Image,
+		Labels:        deployment.Labels,
+		Replicas:      deployment.Replicas,
 	}
 	args := usecase.CreateDeploymentArgs{
 		Deployment:           dep,
 		DeploymentRepository: deploymentRepository,
 	}
-	if err := usecase.CreateDeployment(args); err != nil {
+	if err := usecase.CreateDeployment(ctrl.Context, ctrl.Logger, args); err != nil {
 		ctrl.processError(c, err)
 	}
 	c.JSON(200, deployment)

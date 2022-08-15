@@ -5,18 +5,25 @@ import (
 
 	"github.com/doyyan/kubernetes/cmd/app/config"
 	"github.com/doyyan/kubernetes/internal/app/adapter/controller"
+	"github.com/doyyan/kubernetes/internal/app/adapter/kubernetes"
 	"github.com/doyyan/kubernetes/internal/app/adapter/postgresql"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/net/context"
 )
 
 func main() {
 	// create a new logger for cross application logging
 	logger := logrus.New()
-	config, err := config.LoadConfig(".", logger)
-	if err = postgresql.CreateDBConnection(config, logger); err != nil {
+	ctx := context.Background()
+	config, err := config.LoadConfig(ctx, ".", logger)
+	if err = postgresql.CreateDBConnection(ctx, config, logger); err != nil {
 		logger.Fatal(err)
 	}
-	c := controller.Controller{logger}
+	err = kubernetes.SetConfig(ctx, logger)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	c := controller.Controller{ctx, logger}
 	r := c.Router()
 	if err != nil {
 		log.Fatal("cannot load config:", err)

@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"golang.org/x/net/context"
 )
 
 // Config stores all configuration of the application.
@@ -16,7 +17,7 @@ type Config struct {
 }
 
 // LoadConfig reads configuration from file or environment variables.
-func LoadConfig(path string, logger *logrus.Logger) (config Config, err error) {
+func LoadConfig(ctx context.Context, path string, logger *logrus.Logger) (config Config, err error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
