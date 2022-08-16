@@ -5,9 +5,17 @@ import (
 
 	"github.com/doyyan/kubernetes/internal/app/domain"
 	"github.com/sirupsen/logrus"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	kube "k8s.io/client-go/kubernetes"
 )
 
-func (k Kube) Delete(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) error {
-	//TODO implement me
-	panic("implement me")
+func (k Kube) Delete(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
+	deletePolicy := metav1.DeletePropagationForeground
+	deploymentsClient := clientset.AppsV1().Deployments(d.Namespace)
+	if err := deploymentsClient.Delete(context.TODO(), d.Name, metav1.DeleteOptions{
+		PropagationPolicy: &deletePolicy,
+	}); err != nil {
+		return err
+	}
+	return nil
 }

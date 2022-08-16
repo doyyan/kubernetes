@@ -20,5 +20,6 @@ func (ctrl Controller) Router() *gin.Engine {
 	r := gin.Default()
 	r.POST("/deployment", ctrl.createDeployment)
 	r.GET("/deployment/:name/:namespace", ctrl.getDeployment)
+	r.DELETE("/deployment/:name/:namespace", ctrl.deleteDeployment)
 	return r
 }

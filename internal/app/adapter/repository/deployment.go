@@ -14,7 +14,7 @@ import (
 type K8S interface {
 	GetKubeConfig() *kube.Clientset
 	CreateDeployment(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error
-	Delete(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) error
+	Delete(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment, clientset *kube.Clientset) error
 }
 type Deployment struct {
 	DBconn *gorm.DB
