@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+
 	"github.com/doyyan/kubernetes/internal/app/adapter/kubernetes"
 	"github.com/doyyan/kubernetes/internal/app/adapter/postgresql"
 	"github.com/doyyan/kubernetes/internal/app/adapter/postgresql/model"
@@ -19,23 +22,16 @@ func (d Deployment) Create(ctx context.Context, logger *logrus.Logger, deploymen
 		return err
 	}
 	db := postgresql.GetDB()
-	var labelkeys []string
-	var labelvalues []string
-	for k, v := range deployment.Labels {
-		labelkeys = append(labelkeys, k)
-		labelvalues = append(labelvalues, v)
-	}
+	val := model.JSONMap(deployment.Labels)
 	dep := model.Deployment{
 		Name:          deployment.Name,
 		NameSpace:     deployment.Namespace,
-		LabelKeys:     labelkeys,
-		LabelValues:   labelvalues,
 		Image:         deployment.Image,
 		ContainerPort: deployment.ContainerPort,
 		ContainerName: deployment.ContainerName,
 		Replicas:      deployment.Replicas,
+		LabelsDB:      val,
 	}
-	dep.FillDefaults()
 	result := db.Save(&dep)
 	if result.Error != nil && result.RowsAffected != 1 {
 		return result.Error
@@ -53,4 +49,10 @@ func (d Deployment) Delete(ctx context.Context, logger *logrus.Logger, deploymen
 }
 func (d Deployment) GetStatus(ctx context.Context, logger *logrus.Logger) (domain.Deployment, error) {
 	return domain.Deployment{}, nil
+}
+
+// Make the Attrs struct implement the driver.Valuer interface. This method
+// simply returns the JSON-encoded representation of the struct.
+func Value(labels map[string]string) (driver.Value, error) {
+	return json.Marshal(labels)
 }
