@@ -19,11 +19,12 @@ func main() {
 	if err = postgresql.CreateDBConnection(ctx, config, logger); err != nil {
 		logger.Fatal(err)
 	}
-	err = kubernetes.SetConfig(ctx, logger)
+	kube := kubernetes.Kube{}
+	err = kube.SetConfig(ctx, logger)
 	if err != nil {
 		logger.Fatal(err)
 	}
-	c := controller.Controller{ctx, logger}
+	c := controller.Controller{Context: ctx, Logger: logger}
 	r := c.Router()
 	if err != nil {
 		log.Fatal("cannot load config:", err)

@@ -26,7 +26,7 @@ func (ctrl Controller) createDeployment(c *gin.Context) {
 	}
 	args := usecase.CreateDeploymentArgs{
 		Deployment:           dep,
-		DeploymentRepository: deploymentRepository,
+		DeploymentRepository: ctrl.deploymentRepository,
 	}
 	if err := usecase.CreateDeployment(ctrl.Context, ctrl.Logger, args); err != nil {
 		ctrl.processError(c, err)

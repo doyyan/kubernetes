@@ -13,7 +13,7 @@ import (
 
 var clientset *kube.Clientset
 
-func SetConfig(ctx context.Context, logger *logrus.Logger) error {
+func (k Kube) SetConfig(ctx context.Context, logger *logrus.Logger) error {
 	var kubeconfig *string
 	if home := homedir.HomeDir(); home != "" {
 		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
@@ -29,7 +29,7 @@ func SetConfig(ctx context.Context, logger *logrus.Logger) error {
 	return err
 }
 
-func GetKubeConfig() *kube.Clientset {
+func (k Kube) GetKubeConfig() *kube.Clientset {
 	return clientset
 }
 

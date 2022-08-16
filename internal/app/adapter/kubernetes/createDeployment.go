@@ -10,7 +10,9 @@ import (
 	kube "k8s.io/client-go/kubernetes"
 )
 
-func CreateDeployment(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
+type Kube struct{}
+
+func (k Kube) CreateDeployment(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
 	deploymentsClient := clientset.AppsV1().Deployments(d.Namespace)
 
 	deployment := &appsv1.Deployment{
