@@ -11,6 +11,7 @@ import (
 	kube "k8s.io/client-go/kubernetes"
 )
 
+//go:generate moq -out mocks/k8s.mock.go -pkg repo_test -skip-ensure . K8S
 type K8S interface {
 	GetKubeConfig() *kube.Clientset
 	CreateDeployment(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error

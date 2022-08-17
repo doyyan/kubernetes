@@ -17,6 +17,7 @@ require (
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
+	github.com/DATA-DOG/go-sqlmock v1.5.0 // indirect
 	github.com/MakeNowJust/heredoc v0.0.0-20170808103936-bb23615498cd // indirect
 	github.com/chai2010/gettext-go v0.0.0-20160711120539-c6fed771bfd5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
