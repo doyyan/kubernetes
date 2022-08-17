@@ -4,34 +4,31 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/DATA-DOG/go-sqlmock"
 	repo_test "github.com/doyyan/kubernetes/internal/app/adapter/repository/mocks"
 	"github.com/doyyan/kubernetes/internal/app/domain"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	kube "k8s.io/client-go/kubernetes"
 )
 
-func Test_CreateDeployment(t *testing.T) {
+func Test_DeleteDeployment(t *testing.T) {
 	tests := map[string]struct {
 		err error
 		dep Deployment
 	}{
-		"pass createDeploymentSuccess": {
+		"pass deleteDeploymentSuccess": {
 			err: nil,
-			dep: saveDeploymentReturnsSuccess(),
+			dep: deleteDeploymentReturnsSuccess(),
 		},
-		"pass createDeploymentFail": {
+		"pass deleteDeploymentFail": {
 			err: errors.New(" DB save failure"),
-			dep: saveDeploymentReturnsFail(),
+			dep: deleteDeploymentReturnsFail(),
 		},
 	}
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			err := test.dep.Create(context.Background(), logrus.New(), domain.Deployment{})
+			err := test.dep.Delete(context.Background(), logrus.New(), domain.Deployment{})
 			if test.err != nil {
 				assert.Equal(t, test.err, err)
 			}
@@ -39,9 +36,9 @@ func Test_CreateDeployment(t *testing.T) {
 	}
 }
 
-func saveDeploymentReturnsFail() Deployment {
+func deleteDeploymentReturnsFail() Deployment {
 	k8smock := repo_test.K8SMock{
-		CreateDeploymentFunc: func(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
+		DeleteFunc: func(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
 			return errors.New(" DB save failure")
 		},
 		GetKubeConfigFunc: func() *kube.Clientset {
@@ -52,9 +49,9 @@ func saveDeploymentReturnsFail() Deployment {
 	return dep
 }
 
-func saveDeploymentReturnsSuccess() Deployment {
+func deleteDeploymentReturnsSuccess() Deployment {
 	k8smock := repo_test.K8SMock{
-		CreateDeploymentFunc: func(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
+		DeleteFunc: func(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
 			return nil
 		},
 		GetKubeConfigFunc: func() *kube.Clientset {
@@ -63,16 +60,4 @@ func saveDeploymentReturnsSuccess() Deployment {
 	}
 	dep := Deployment{K8S: &k8smock, DBconn: SetDB()}
 	return dep
-}
-
-func SetDB() *gorm.DB {
-	db1, _, _ := sqlmock.New()
-	dialector := postgres.New(postgres.Config{
-		DSN:                  "sqlmock_db_0",
-		DriverName:           "postgres",
-		Conn:                 db1,
-		PreferSimpleProtocol: true,
-	})
-	db2, _ := gorm.Open(dialector, &gorm.Config{})
-	return db2
 }
