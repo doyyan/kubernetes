@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (ctrl Controller) getDeployment(c *gin.Context) {
+func (ctrl Controller) getRolloutStatus(c *gin.Context) {
 	namespace := c.DefaultQuery("namespace", "default")
 	name := c.Query("name")
 	dep := valueObject.Deployment{
@@ -25,7 +25,23 @@ func (ctrl Controller) getDeployment(c *gin.Context) {
 		c.JSON(404, gin.H{
 			"message": "deployment not found",
 		})
-	} else {
-		c.JSON(200, deployment)
+		return
 	}
+	message, status, err := usecase.GetRolloutStatus(ctrl.Context, ctrl.Logger, args)
+	if err != nil {
+		ctrl.processError(c, err)
+	}
+	var rolloutStatus string
+	switch status {
+	case true:
+		rolloutStatus = "Process Complete"
+	default:
+		rolloutStatus = "Process in Progress"
+
+	}
+	c.JSON(200, gin.H{
+		"rollout Status": rolloutStatus,
+		"message":        message,
+	})
+
 }

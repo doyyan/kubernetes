@@ -15,7 +15,7 @@ type CreateDeploymentArgs struct {
 
 func CreateDeployment(ctx context.Context, logger *logrus.Logger, args CreateDeploymentArgs) error {
 	deployment := domain.Deployment{
-		Namespace:     args.Deployment.Namespace,
+		NameSpace:     args.Deployment.Namespace,
 		Name:          args.Deployment.Name,
 		Kind:          "deployment",
 		ContainerName: args.Deployment.ContainerName,

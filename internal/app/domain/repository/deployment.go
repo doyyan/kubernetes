@@ -12,5 +12,5 @@ type IDeploymentRepo interface {
 	Create(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) error
 	List(ctx context.Context, logger *logrus.Logger) ([]domain.Deployment, error)
 	Delete(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) error
-	GetStatus(ctx context.Context, logger *logrus.Logger) (domain.Deployment, error)
+	GetRolloutStatus(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) (string, bool, error)
 }

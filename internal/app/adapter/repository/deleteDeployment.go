@@ -17,9 +17,9 @@ func (d Deployment) Delete(ctx context.Context, logger *logrus.Logger, deploymen
 	}
 	dep := model.Deployment{
 		Name:      deployment.Name,
-		NameSpace: deployment.Namespace,
+		NameSpace: deployment.NameSpace,
 	}
-	if err := d.DBconn.Where("name = ? AND namespace = ?", deployment.Name, deployment.Namespace).Delete(&dep).Error; err != nil {
+	if err := d.DBconn.Where("name = ? AND namespace = ?", deployment.Name, deployment.NameSpace).Delete(&dep).Error; err != nil {
 		return err
 	}
 	return nil

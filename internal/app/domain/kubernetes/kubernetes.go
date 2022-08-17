@@ -7,5 +7,5 @@ type IDeploymentK8S interface {
 	Create(deployment domain.Deployment) error
 	List() ([]domain.Deployment, error)
 	Delete(deployment domain.Deployment) error
-	GetStatus() (domain.Deployment, error)
+	GetStatus(domain.Deployment) (string, bool, error)
 }

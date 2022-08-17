@@ -7,8 +7,8 @@ import (
 )
 
 func (ctrl Controller) deleteDeployment(c *gin.Context) {
-	name := c.Param("name")
-	namespace := c.Param("namespace")
+	namespace := c.DefaultQuery("namespace", "default")
+	name := c.Query("name")
 	dep := valueObject.Deployment{
 		Namespace: namespace,
 		Name:      name,

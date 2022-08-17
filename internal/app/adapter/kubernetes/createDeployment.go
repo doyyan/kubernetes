@@ -13,14 +13,14 @@ import (
 type Kube struct{}
 
 func (k Kube) CreateDeployment(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
-	deploymentsClient := clientset.AppsV1().Deployments(d.Namespace)
+	deploymentsClient := clientset.AppsV1().Deployments(d.NameSpace)
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: d.Name,
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: Int32Ptr(2),
+			Replicas: Int32Ptr(int32(d.Replicas)),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: d.Labels,
 			},

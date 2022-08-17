@@ -19,7 +19,8 @@ func (ctrl Controller) Router() *gin.Engine {
 	ctrl.deploymentRepository = repository.Deployment{postgresql.GetDB(), kubernetes.Kube{}}
 	r := gin.Default()
 	r.POST("/deployment", ctrl.createDeployment)
-	r.GET("/deployment/:name/:namespace", ctrl.getDeployment)
-	r.DELETE("/deployment/:name/:namespace", ctrl.deleteDeployment)
+	r.GET("/deployment", ctrl.getDeployment)
+	r.DELETE("/deployment", ctrl.deleteDeployment)
+	r.GET("/deployment/status", ctrl.getRolloutStatus)
 	return r
 }

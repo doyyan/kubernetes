@@ -7,13 +7,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func DeleteDeployment(ctx context.Context, logger *logrus.Logger, args CreateDeploymentArgs) error {
+func GetRolloutStatus(ctx context.Context, logger *logrus.Logger, args CreateDeploymentArgs) (string, bool, error) {
 	deployment := domain.Deployment{
 		NameSpace: args.Deployment.Namespace,
 		Name:      args.Deployment.Name,
 	}
-	if err := args.DeploymentRepository.Delete(ctx, logger, deployment); err != nil {
-		return err
-	}
-	return nil
+	return args.DeploymentRepository.GetRolloutStatus(ctx, logger, deployment)
 }

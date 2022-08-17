@@ -1,7 +1,7 @@
 package domain
 
 type Deployment struct {
-	Namespace     string
+	NameSpace     string
 	Name          string
 	Kind          string
 	Image         string

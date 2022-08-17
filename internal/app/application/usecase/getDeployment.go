@@ -9,7 +9,7 @@ import (
 
 func GetDeployment(ctx context.Context, logger *logrus.Logger, args CreateDeploymentArgs) (domain.Deployment, error) {
 	deployment := domain.Deployment{
-		Namespace: args.Deployment.Namespace,
+		NameSpace: args.Deployment.Namespace,
 		Name:      args.Deployment.Name,
 	}
 	dep, err := args.DeploymentRepository.Get(ctx, logger, deployment)

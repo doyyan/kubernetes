@@ -11,7 +11,7 @@ import (
 
 func (k Kube) Delete(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
 	deletePolicy := metav1.DeletePropagationForeground
-	deploymentsClient := clientset.AppsV1().Deployments(d.Namespace)
+	deploymentsClient := clientset.AppsV1().Deployments(d.NameSpace)
 	if err := deploymentsClient.Delete(context.TODO(), d.Name, metav1.DeleteOptions{
 		PropagationPolicy: &deletePolicy,
 	}); err != nil {

@@ -17,7 +17,7 @@ func (d Deployment) Create(ctx context.Context, logger *logrus.Logger, deploymen
 	val := model.JSONMap(deployment.Labels)
 	dep := model.Deployment{
 		Name:          deployment.Name,
-		NameSpace:     deployment.Namespace,
+		NameSpace:     deployment.NameSpace,
 		Kind:          deployment.Kind,
 		Image:         deployment.Image,
 		ContainerPort: deployment.ContainerPort,
