@@ -22,5 +22,6 @@ func (ctrl Controller) Router() *gin.Engine {
 	r.GET("/deployment", ctrl.getDeployment)
 	r.DELETE("/deployment", ctrl.deleteDeployment)
 	r.GET("/deployment/status", ctrl.getRolloutStatus)
+	r.GET("/deployment/all", ctrl.listDeployment)
 	return r
 }
