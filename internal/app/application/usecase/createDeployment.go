@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"github.com/doyyan/kubernetes/internal/app/domain"
-	"github.com/doyyan/kubernetes/internal/app/domain/repository"
+	"github.com/doyyan/kubernetes/internal/app/domain/domainrepo"
 	"github.com/doyyan/kubernetes/internal/app/domain/valueObject"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
@@ -10,7 +10,7 @@ import (
 
 type CreateDeploymentArgs struct {
 	Deployment           valueObject.Deployment
-	DeploymentRepository repository.IDeploymentRepo
+	DeploymentRepository domainrepo.IDeploymentRepo
 }
 
 func CreateDeployment(ctx context.Context, logger *logrus.Logger, args CreateDeploymentArgs) error {

@@ -4,6 +4,7 @@ import (
 	"github.com/doyyan/kubernetes/internal/app/adapter/kubernetes"
 	"github.com/doyyan/kubernetes/internal/app/adapter/postgresql"
 	"github.com/doyyan/kubernetes/internal/app/adapter/repository"
+	"github.com/doyyan/kubernetes/internal/app/domain/domainrepo"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
@@ -12,7 +13,7 @@ import (
 type Controller struct {
 	Context              context.Context
 	Logger               *logrus.Logger
-	deploymentRepository repository.Deployment
+	deploymentRepository domainrepo.IDeploymentRepo
 }
 
 func (ctrl Controller) Router() *gin.Engine {

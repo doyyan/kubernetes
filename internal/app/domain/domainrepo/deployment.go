@@ -1,4 +1,4 @@
-package repository
+package domainrepo
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-//go:generate moq -out mocks/deploymentRepo.mock.go -pkg repo_test -skip-ensure . IDeploymentRepo
+//go:generate moq -out mocks/deploymentRepo.mock.go -pkg domainrepotest -skip-ensure . IDeploymentRepo
 type IDeploymentRepo interface {
 	Get(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) (domain.Deployment, error)
 	Create(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) error
