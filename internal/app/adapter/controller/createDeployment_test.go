@@ -10,8 +10,6 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/doyyan/kubernetes/internal/app/adapter/postgresql/model"
-	"github.com/doyyan/kubernetes/internal/app/adapter/repository"
-	repo_test "github.com/doyyan/kubernetes/internal/app/adapter/repository/mocks"
 	"github.com/doyyan/kubernetes/internal/app/domain"
 	"github.com/doyyan/kubernetes/internal/app/domain/domainrepo"
 	domainrepotest "github.com/doyyan/kubernetes/internal/app/domain/domainrepo/mocks"
@@ -21,53 +19,52 @@ import (
 	"golang.org/x/net/context"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	kube "k8s.io/client-go/kubernetes"
 )
 
 func Test_CreateDeployment(t *testing.T) {
 	tests := map[string]struct {
-		err     error
-		dep     repository.Deployment
-		testDep model.Deployment
+		err            error
+		testDep        model.Deployment
+		testcase       domainrepo.IDeploymentRepo
+		outputName     string
+		httpReturnCode int
 	}{
 		"pass createDeploymentSuccess": {
-			err:     nil,
-			dep:     saveDeploymentReturnsSuccess(),
-			testDep: DeploymentData(),
+			err:            nil,
+			testDep:        DeploymentData(),
+			testcase:       createDeploymentSuccess(),
+			outputName:     DeploymentData().Name,
+			httpReturnCode: 200,
 		},
 		"pass createDeploymentFail": {
-			err:     errors.New(" DB save failure"),
-			dep:     saveDeploymentReturnsFail(),
-			testDep: DeploymentData(),
+			err:            errors.New(" DB save failure"),
+			testcase:       createDeploymentFail(),
+			testDep:        DeploymentData(),
+			httpReturnCode: 500,
+			outputName:     "",
 		},
 	}
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			router := setupRouter(test.dep)
+			router := setupRouter(test.testcase)
 			w := httptest.NewRecorder()
 			data, _ := json.Marshal(test.testDep)
 			req, _ := http.NewRequest(http.MethodPost, "/deployment", bytes.NewBuffer(data))
 			router.ServeHTTP(w, req)
-			/*			cont, _ := gin.CreateTestContext(w)
-						controller.deploymentRepository = test.dep
-						controller.createDeployment(cont)*/
-			assert.Equal(t, 200, w.Code)
-
-			var got gin.H
-			err := json.Unmarshal(w.Body.Bytes(), &got)
-			if err != nil {
-				t.Fatal(err)
-			}
-			assert.Equal(t, test.err, err)
-			err = test.dep.Create(context.Background(), logrus.New(), domain.Deployment{})
-			if test.err != nil {
-				assert.Equal(t, test.err, err)
+			assert.Equal(t, test.httpReturnCode, w.Code)
+			if w.Code == 200 {
+				var output model.Deployment
+				err := json.Unmarshal(w.Body.Bytes(), &output)
+				if err != nil {
+					t.Fatal(err)
+				}
+				assert.Equal(t, test.outputName, model.Deployment(output).Name)
 			}
 		})
 	}
 }
 
-func saveDeploymentReturnsFail() repository.Deployment {
+/*func saveDeploymentReturnsFail() repository.Deployment {
 	k8smock := repo_test.K8SMock{
 		CreateDeploymentFunc: func(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
 			return errors.New(" DB save failure")
@@ -91,7 +88,7 @@ func saveDeploymentReturnsSuccess() repository.Deployment {
 	}
 	dep := repository.Deployment{K8S: &k8smock, DBconn: SetDB()}
 	return dep
-}
+}*/
 
 func SetDB() *gorm.DB {
 	db1, _, _ := sqlmock.New()
@@ -112,10 +109,10 @@ func CreateController() Controller {
 	}
 }
 
-func setupRouter(dep repository.Deployment) *gin.Engine {
+func setupRouter(testcase domainrepo.IDeploymentRepo) *gin.Engine {
 	r := gin.Default()
 	cont := CreateController()
-	cont.deploymentRepository = createDeployment()
+	cont.deploymentRepository = testcase
 	r.POST("/deployment", cont.createDeployment)
 	return r
 }
@@ -133,9 +130,16 @@ func DeploymentData() model.Deployment {
 	}
 }
 
-func createDeployment() domainrepo.IDeploymentRepo {
+func createDeploymentSuccess() domainrepo.IDeploymentRepo {
 	depRepoMock := domainrepotest.IDeploymentRepoMock{CreateFunc: func(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) error {
 		return nil
+	}}
+	return &depRepoMock
+}
+
+func createDeploymentFail() domainrepo.IDeploymentRepo {
+	depRepoMock := domainrepotest.IDeploymentRepoMock{CreateFunc: func(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) error {
+		return errors.New(" DB save failure")
 	}}
 	return &depRepoMock
 }

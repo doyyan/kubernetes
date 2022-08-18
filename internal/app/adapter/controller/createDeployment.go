@@ -29,9 +29,10 @@ func (ctrl Controller) createDeployment(c *gin.Context) {
 		DeploymentRepository: ctrl.deploymentRepository,
 	}
 	if err := usecase.CreateDeployment(ctrl.Context, ctrl.Logger, args); err != nil {
-		ctrl.processError(c, err)
+		c.JSON(http.StatusInternalServerError, "")
+	} else {
+		c.JSON(200, deployment)
 	}
-	c.JSON(200, deployment)
 }
 
 func (ctrl Controller) processError(c *gin.Context, err error) {

@@ -19,6 +19,7 @@ func (ctrl Controller) deleteDeployment(c *gin.Context) {
 	}
 	if err := usecase.DeleteDeployment(ctrl.Context, ctrl.Logger, args); err != nil {
 		ctrl.processError(c, err)
+	} else {
+		c.JSON(200, nil)
 	}
-	c.JSON(200, nil)
 }
