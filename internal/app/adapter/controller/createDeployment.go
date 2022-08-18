@@ -29,9 +29,11 @@ func (ctrl Controller) createDeployment(c *gin.Context) {
 		DeploymentRepository: ctrl.deploymentRepository,
 	}
 	if err := usecase.CreateDeployment(ctrl.Context, ctrl.Logger, args); err != nil {
-		c.JSON(http.StatusInternalServerError, "")
+		c.JSON(http.StatusInternalServerError, err.Error())
 	} else {
-		c.JSON(200, deployment)
+		c.JSON(200, gin.H{
+			"message": "deployment created",
+		})
 	}
 }
 

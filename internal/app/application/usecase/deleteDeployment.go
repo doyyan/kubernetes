@@ -7,6 +7,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//DeleteDeployment sends a k8s call to delete a deployment and on success deletes
+// the deployment from the database
 func DeleteDeployment(ctx context.Context, logger *logrus.Logger, args CreateDeploymentArgs) error {
 	deployment := domain.Deployment{
 		NameSpace: args.Deployment.Namespace,

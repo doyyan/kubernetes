@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/doyyan/kubernetes/internal/app/application/usecase"
 	"github.com/doyyan/kubernetes/internal/app/domain/valueObject"
 	"github.com/gin-gonic/gin"
@@ -18,8 +20,10 @@ func (ctrl Controller) deleteDeployment(c *gin.Context) {
 		DeploymentRepository: ctrl.deploymentRepository,
 	}
 	if err := usecase.DeleteDeployment(ctrl.Context, ctrl.Logger, args); err != nil {
-		ctrl.processError(c, err)
+		c.JSON(http.StatusInternalServerError, err.Error())
 	} else {
-		c.JSON(200, nil)
+		c.JSON(200, gin.H{
+			"message": "deployment deleted",
+		})
 	}
 }

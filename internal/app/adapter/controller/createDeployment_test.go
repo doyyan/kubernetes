@@ -26,14 +26,14 @@ func Test_CreateDeployment(t *testing.T) {
 		err            error
 		testDep        model.Deployment
 		testcase       domainrepo.IDeploymentRepo
-		outputName     string
+		output         string
 		httpReturnCode int
 	}{
 		"pass createDeploymentSuccess": {
 			err:            nil,
 			testDep:        DeploymentData(),
 			testcase:       createDeploymentSuccess(),
-			outputName:     DeploymentData().Name,
+			output:         "deployment created",
 			httpReturnCode: 200,
 		},
 		"pass createDeploymentFail": {
@@ -41,7 +41,7 @@ func Test_CreateDeployment(t *testing.T) {
 			testcase:       createDeploymentFail(),
 			testDep:        DeploymentData(),
 			httpReturnCode: 500,
-			outputName:     "",
+			output:         "",
 		},
 	}
 	for name, test := range tests {
@@ -53,42 +53,16 @@ func Test_CreateDeployment(t *testing.T) {
 			router.ServeHTTP(w, req)
 			assert.Equal(t, test.httpReturnCode, w.Code)
 			if w.Code == 200 {
-				var output model.Deployment
+				var output map[string]string
 				err := json.Unmarshal(w.Body.Bytes(), &output)
 				if err != nil {
 					t.Fatal(err)
 				}
-				assert.Equal(t, test.outputName, model.Deployment(output).Name)
+				assert.Equal(t, test.output, output["message"])
 			}
 		})
 	}
 }
-
-/*func saveDeploymentReturnsFail() repository.Deployment {
-	k8smock := repo_test.K8SMock{
-		CreateDeploymentFunc: func(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
-			return errors.New(" DB save failure")
-		},
-		GetKubeConfigFunc: func() *kube.Clientset {
-			return &kube.Clientset{}
-		},
-	}
-	dep := repository.Deployment{K8S: &k8smock, DBconn: SetDB()}
-	return dep
-}
-
-func saveDeploymentReturnsSuccess() repository.Deployment {
-	k8smock := repo_test.K8SMock{
-		CreateDeploymentFunc: func(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
-			return nil
-		},
-		GetKubeConfigFunc: func() *kube.Clientset {
-			return &kube.Clientset{}
-		},
-	}
-	dep := repository.Deployment{K8S: &k8smock, DBconn: SetDB()}
-	return dep
-}*/
 
 func SetDB() *gorm.DB {
 	db1, _, _ := sqlmock.New()

@@ -8,11 +8,15 @@ import (
 	"golang.org/x/net/context"
 )
 
+//CreateDeploymentArgs arguments needed to transport a deployment from the domain/usecase
+// layer to the addpter layer and an interface for deployment DB methods
 type CreateDeploymentArgs struct {
 	Deployment           valueObject.Deployment
 	DeploymentRepository domainrepo.IDeploymentRepo
 }
 
+//CreateDeployment sends a call to k8s to create a deployment and on success insert deployment
+// data to the database
 func CreateDeployment(ctx context.Context, logger *logrus.Logger, args CreateDeploymentArgs) error {
 	deployment := domain.Deployment{
 		NameSpace:     args.Deployment.Namespace,

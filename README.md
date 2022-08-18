@@ -1,47 +1,63 @@
-# portdomainservice
-Introduction
-================
-The Port Domain Service can create and maintain data of maritime Ports.
-The list of ports must be available in the Home directory, for a sample see the ports.json file
+KubectlDB: REST APIs for kubectl with datastore
+===================================
 
-Usage
-================
-##To RUN the service
-```
-go run cmd/main.go
-```
-##And then...
-Copy ports.json file to the Home Directory and then...
+KubectlDB is a web server which runs kubectl commands and stores the API calls as events in a .postgreSQL database. It can Create, Delete, List and Get deployments and track progress of a Rollout of a deployment.
 
-##To Update Ports
-```
-curl -X POST  http://localhost:8090/v1/updateports --http0.9
-```
-##To Create Ports
-```
-curl -X POST  http://localhost:8090/v1/createports --http0.9
-```
-##To Build the Service
-```
-go build ./...
-```
-##To Test the Service
-```
-go test ./...
-```
+### Prerequisites to run on a computer
 
-Notes
-================
+- make (https://www.gnu.org/software/make/)
+- docker desktop (https://www.docker.com/products/docker-desktop/) and access to download images
+- Connection to a Kubernetes cluster with read/write privileges to create and read objects (https://minikube.sigs.k8s.io/docs/start/)
+- PostgreSQL database (optional, https://www.postgresql.org/download/)
+- git and access to download from github
+- download and install Golang 1.16 or higher (https://go.dev/doc/install)
+- A REST API Client (e.g Postman https://www.postman.com/downloads/)
 
 
-Help
-================
+## Quick Start
+Create and navigate to a directory in the filesystem with write access and
+
+    $ git clone https://github.com/doyyan/kubernetes.git
+    $ cd kubernetes
+    $ make postgres
+    $ make createdb
+    $ make migrateup
+    $ go build ./...
+    $ go run cmd/app/main.go
 
 
-License
-================
+## REST API calls to process deployments
 
-Licensed under the New BSD License.
+### Create a deployment
+   ```
+curl -X POST 'localhost:8080/deployment' -H 'Content-Type: text/plain' --data-raw '{
+   "Name":"testDeployment",
+   "Namespace":"default",
+   "Image":"nginx:1.12",
+   "ContainerPort":80,
+   "ContainerName":"web",
+   "Labels":{
+      "app":"demo"
+   },
+   "Replicas":10
+}'
 
-Author
-================
+Returns
+
+```
+
+### Find a deployment
+  ```
+curl -X GET 'localhost:8080/deployment/status?name=testDeployment'
+  ```
+
+### List all deployments
+
+
+### Track status of a deployment
+
+### Delete a deployment
+  ```
+curl -X DELETE 'localhost:8080/deployment?name=testDeployment'
+  ```
+
