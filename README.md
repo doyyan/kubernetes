@@ -28,10 +28,10 @@ Create and navigate to a directory in the filesystem with write access and
 
 ## REST API calls to process deployments
 
-### Create a deployment
+### Create a deployment (from k8s and DB)
    ```
 curl -X POST 'localhost:8080/deployment' -H 'Content-Type: text/plain' --data-raw '{
-   "Name":"testDeployment",
+   "Name":"testdeployment",
    "Namespace":"default",
    "Image":"nginx:1.12",
    "ContainerPort":80,
@@ -41,23 +41,98 @@ curl -X POST 'localhost:8080/deployment' -H 'Content-Type: text/plain' --data-ra
    },
    "Replicas":10
 }'
-
+```
+```
 Returns
 
+{
+    "message": "deployment created"
+}
 ```
 
-### Find a deployment
+### Find a deployment (from DB)
   ```
-curl -X GET 'localhost:8080/deployment/status?name=testDeployment'
+curl -X GET 'localhost:8080/deployment/status?name=testdeployment'
+```
+```
+Returns
+
+{
+    "NameSpace": "default",
+    "Name": "testdeployment",
+    "Kind": "deployment",
+    "Image": "nginx:1.12",
+    "ContainerName": "web",
+    "ContainerPort": 80,
+    "Labels": {
+        "app": "demo"
+    },
+    "Replicas": 10,
+    "Ready": 0,
+    "Current": 0,
+    "Available": 0,
+    "Status": ""
+}
   ```
 
-### List all deployments
-
-
-### Track status of a deployment
-
-### Delete a deployment
+### List all deployments (from DB)
   ```
-curl -X DELETE 'localhost:8080/deployment?name=testDeployment'
+curl -X GET 'localhost:8080/deployment/all'
+```
+```
+Returns
+[
+{
+  "NameSpace": "default",
+  "Name": "testdeployment",
+  "Kind": "deployment",
+  "Image": "nginx:1.12",
+  "ContainerName": "web",
+  "ContainerPort": 80,
+  "Labels": {
+      "app": "demo"
+  },
+  "Replicas": 10,
+  "Ready": 0,
+  "Current": 0,
+  "Available": 0,
+  "Status": ""
+}
+]
+  ```
+### Track status of a deployment (from k8s)
+  ```
+curl -X GET 'localhost:8080/deployment/status?name=testdeployment'
+  ```
+```
+Returns
+
+Prior starting deployment
+{
+    "message": "deployment not found"
+}
+
+Deployment In Progress
+{
+    "message": "Waiting for deployment \"testdeployment2\" rollout to finish: 10 of 20 updated replicas are available...\n",
+    "rollout Status": "Process in Progress"
+}
+
+Finally
+{
+    "message": "deployment \"testdeployment2\" successfully rolled out\n",
+    "rollout Status": "Process Complete"
+}
+  ```
+### Delete a deployment (from k8s and DB)
+  ```
+curl -X DELETE 'localhost:8080/deployment?name=testdeployment'
+```
+```
+Returns
+
+{
+    "message": "deployment deleted"
+}
   ```
 
