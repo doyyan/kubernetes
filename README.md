@@ -17,9 +17,15 @@ KubectlDB is a web server which runs kubectl commands and stores the API calls a
 ## Quick Start
 Create and navigate to a directory in the filesystem with write access and
 
+First ensure Docker is running locally and check current kubectl config by running   
+
+```kubectl config current-context```
+
     $ git clone https://github.com/doyyan/kubernetes.git
     $ cd kubernetes
+    $ make rm-postgres
     $ make postgres
+    $ sleep 10
     $ make createdb
     $ make migrateup
     $ go build ./...

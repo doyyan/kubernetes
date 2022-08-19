@@ -14,7 +14,7 @@ FROM prepare AS build
 
 COPY . .
 
-RUN CGO_ENABLED=0 go build -ldflags "-s -w" -o bin/kubectldb cmd/app/main.go
+RUN CGO_ENABLED=0 go build -o bin/kubectldb cmd/app/main.go
 
 #
 # STAGE 3: run
