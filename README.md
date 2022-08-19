@@ -17,7 +17,7 @@ KubectlDB is a web server which runs kubectl commands and stores the API calls a
 ## Quick Start
 Create and navigate to a directory in the filesystem with write access and
 
-First ensure Docker is running locally and check current kubectl config by running   
+First ensure Docker is running locally and check if connected to the correct k8s cluster by running   
 
 ```kubectl config current-context```
 
