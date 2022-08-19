@@ -30,7 +30,7 @@ migratedown1:
 dockerbuild:
 	go mod tidy -v
 	go mod vendor
-	docker build . -t local_busybox -f build/Dockerfile
+	docker build . -t kubectldb -f build/Dockerfile
 
 test:
 	go test -v -cover ./...
