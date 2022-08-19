@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/doyyan/kubernetes/internal/app/application/usecase"
 	"github.com/doyyan/kubernetes/internal/app/domain/valueObject"
 	"github.com/gin-gonic/gin"
@@ -20,13 +22,15 @@ func (ctrl Controller) getDeployment(c *gin.Context) {
 	}
 	deployment, err := usecase.GetDeployment(ctrl.Context, ctrl.Logger, args)
 	if err != nil {
-		ctrl.processError(c, err)
-	}
-	if deployment.Name == "" {
-		c.JSON(404, gin.H{
-			"message": "deployment not found",
-		})
+		c.JSON(http.StatusInternalServerError, err.Error())
 	} else {
-		c.JSON(200, deployment)
+		if deployment.Name == "" {
+			c.JSON(404, gin.H{
+				"message": "deployment not found",
+			})
+		} else {
+			c.JSON(200, deployment)
+		}
 	}
+
 }
