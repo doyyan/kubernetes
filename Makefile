@@ -27,6 +27,9 @@ migrateup1:
 migratedown1:
 	migrate -path internal/app/adapter/postgresql/migration -database "$(DB_URL)" -verbose down 1
 
+dockerbuild:
+	docker build . -t local_busybox -f build/Dockerfile
+
 test:
 	go test -v -cover ./...
 

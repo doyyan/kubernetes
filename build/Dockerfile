@@ -1,16 +1,29 @@
-FROM golang:1.12.0-alpine3.9 as build
+#
+# STAGE 1: prepare
+#
+FROM golang:1.18-alpine as prepare
 
-ENV CGO_ENABLED="0" GOOS="linux" GOARCH="amd64"
+WORKDIR /source
 
-WORKDIR /build
+COPY vendor .
 
-ADD .. /build
+#
+# STAGE 2: build
+#
+FROM prepare AS build
 
-RUN go build -o ports .
+COPY . .
 
-FROM scratch
+RUN CGO_ENABLED=0 go build -ldflags "-s -w" -o bin/kubectldb cmd/app/main.go
+
+#
+# STAGE 3: run
+#
+FROM scratch as run
 USER 10001:10001
 
-COPY --from=build /ports /ports
+COPY --from=build /source/bin/kubectldb /kubectldb
 
-ENTRYPOINT ["/ports"]
+EXPOSE 8080
+
+ENTRYPOINT ["/kubectldb"]
