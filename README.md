@@ -22,6 +22,7 @@ First ensure Docker is running locally and check current kubectl config by runni
 ```kubectl config current-context```
 
     $ git clone https://github.com/doyyan/kubernetes.git
+    $ git checkout techtest
     $ cd kubernetes
     $ make rm-postgres
     $ make postgres
