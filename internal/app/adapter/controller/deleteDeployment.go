@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//deleteDeployment router to delete a deployment from k8s and DB
 func (ctrl Controller) deleteDeployment(c *gin.Context) {
 	namespace := c.DefaultQuery("namespace", "default")
 	name := c.Query("name")

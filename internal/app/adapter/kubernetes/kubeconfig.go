@@ -13,6 +13,7 @@ import (
 
 var clientset *kube.Clientset
 
+//SetConfig initialises connection to a k8s API server
 func (k Kube) SetConfig(ctx context.Context, logger *logrus.Logger) error {
 	var kubeconfig *string
 	if home := homedir.HomeDir(); home != "" {
@@ -29,8 +30,10 @@ func (k Kube) SetConfig(ctx context.Context, logger *logrus.Logger) error {
 	return err
 }
 
+//GetKubeConfig returns the k8s config
 func (k Kube) GetKubeConfig() *kube.Clientset {
 	return clientset
 }
 
+//Int32Ptr converts an int32 to a int32 pointer
 func Int32Ptr(i int32) *int32 { return &i }

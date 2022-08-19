@@ -11,7 +11,9 @@ import (
 	"k8s.io/kubectl/pkg/polymorphichelpers"
 )
 
-func (k Kube) GetRolloutStatus(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment, clientset *kube.Clientset) (string, bool, error) {
+//GetRolloutStatus pings the k8s server to retrieve the current rollout status of adeployment
+func (k Kube) GetRolloutStatus(ctx context.Context, logger *logrus.Logger,
+	deployment domain.Deployment, clientset *kube.Clientset) (string, bool, error) {
 	deploymentsClient := clientset.AppsV1().Deployments(deployment.NameSpace)
 	dep, err := deploymentsClient.Get(context.TODO(), deployment.Name, metav1.GetOptions{})
 	if err != nil {

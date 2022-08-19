@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//getDeployment router to get a single deployment from the DB
 func (ctrl Controller) getDeployment(c *gin.Context) {
 	namespace := c.DefaultQuery("namespace", "default")
 	name := c.Query("name")

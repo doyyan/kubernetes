@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//GetRolloutStatus retrieves the current deployment rollout status
 func (d Deployment) GetRolloutStatus(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) (string, bool, error) {
 	clientset := d.K8S.GetKubeConfig()
 	return d.K8S.GetRolloutStatus(ctx, logger, deployment, clientset)

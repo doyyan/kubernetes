@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//List finds ALL the deployments stored in the DB and returns them
 func (d Deployment) List(ctx context.Context, logger *logrus.Logger) (deps []domain.Deployment, err error) {
 	deployments := []model.Deployment{}
 	result := d.DBconn.Find(&deployments)

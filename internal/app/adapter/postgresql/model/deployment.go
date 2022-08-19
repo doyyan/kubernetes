@@ -6,6 +6,8 @@ import (
 	"errors"
 )
 
+//JSONMap a map to convert a map of strings to a JSON value to be stored in the DB
+// and renvert it back
 type JSONMap map[string]string
 type Deployment struct {
 	ID            int               `gorm:"primaryKey" json:"id"`
@@ -22,6 +24,7 @@ type Deployment struct {
 	UpdatedAt     int64             `gorm:"column:updated_at;autoUpdateTime:milli"`
 }
 
+//FillDefaults fills any default values prior to storing in the DB
 func (d *Deployment) FillDefaults() {
 	d.Kind = "Deployment"
 }

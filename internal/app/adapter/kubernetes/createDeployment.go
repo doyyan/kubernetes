@@ -12,6 +12,7 @@ import (
 
 type Kube struct{}
 
+// CreateDeployment calls the k8s APIs to create a deployment
 func (k Kube) CreateDeployment(ctx context.Context, logger *logrus.Logger, d domain.Deployment, clientset *kube.Clientset) error {
 	deploymentsClient := clientset.AppsV1().Deployments(d.NameSpace)
 

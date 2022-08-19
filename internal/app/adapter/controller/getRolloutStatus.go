@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//getRolloutStatus gives an update of the k8s rollout status of a deployment
 func (ctrl Controller) getRolloutStatus(c *gin.Context) {
 	namespace := c.DefaultQuery("namespace", "default")
 	name := c.Query("name")

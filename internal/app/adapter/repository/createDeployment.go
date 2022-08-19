@@ -7,6 +7,8 @@ import (
 	"golang.org/x/net/context"
 )
 
+//Create calls the k8s API server and creates a deployment, if successful
+// stores the deployment data in the DB
 func (d Deployment) Create(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) error {
 	clientset := d.K8S.GetKubeConfig()
 	err := d.K8S.CreateDeployment(ctx, logger, deployment, clientset)

@@ -10,12 +10,15 @@ import (
 	"golang.org/x/net/context"
 )
 
+//Controller carries essential utilities that will be needed across all
+// controller operations
 type Controller struct {
 	Context              context.Context
 	Logger               *logrus.Logger
 	deploymentRepository domainrepo.IDeploymentRepo
 }
 
+//Router defines all the REST API endpoints of the application
 func (ctrl Controller) Router() *gin.Engine {
 	ctrl.deploymentRepository = repository.Deployment{postgresql.GetDB(), kubernetes.Kube{}}
 	r := gin.Default()

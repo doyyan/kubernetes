@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//createDeployment calls functions to create k8s deployment and store to DB
 func (ctrl Controller) createDeployment(c *gin.Context) {
 	deployment := model.Deployment{}
 	if err := c.BindJSON(&deployment); err != nil {

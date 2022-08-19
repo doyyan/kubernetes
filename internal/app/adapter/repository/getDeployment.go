@@ -7,6 +7,7 @@ import (
 	"golang.org/x/net/context"
 )
 
+//Get gets a single k8s deployment from the DB ordered by the ID desc
 func (d Deployment) Get(ctx context.Context, logger *logrus.Logger, deployment domain.Deployment) (domain.Deployment, error) {
 	dep := model.Deployment{}
 	d.DBconn.Where("name = ? AND namespace = ?", deployment.Name, deployment.NameSpace).Last(&dep)

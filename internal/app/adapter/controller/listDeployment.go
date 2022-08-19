@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//listDeployment gives a list of deployments in the DB
 func (ctrl Controller) listDeployment(c *gin.Context) {
 	args := usecase.CreateDeploymentArgs{
 		DeploymentRepository: ctrl.deploymentRepository,
