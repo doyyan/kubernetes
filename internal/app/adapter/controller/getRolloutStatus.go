@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/doyyan/kubernetes/internal/app/application/usecase"
 	"github.com/doyyan/kubernetes/internal/app/domain/valueObject"
 	"github.com/gin-gonic/gin"
@@ -30,19 +32,20 @@ func (ctrl Controller) getRolloutStatus(c *gin.Context) {
 	}
 	message, status, err := usecase.GetRolloutStatus(ctrl.Context, ctrl.Logger, args)
 	if err != nil {
-		ctrl.processError(c, err)
-	}
-	var rolloutStatus string
-	switch status {
-	case true:
-		rolloutStatus = "Process Complete"
-	default:
-		rolloutStatus = "Process in Progress"
+		c.JSON(http.StatusInternalServerError, err.Error())
+	} else {
+		var rolloutStatus string
+		switch status {
+		case true:
+			rolloutStatus = "Process Complete"
+		default:
+			rolloutStatus = "Process in Progress"
 
+		}
+		c.JSON(200, gin.H{
+			"rollout Status": rolloutStatus,
+			"message":        message,
+		})
 	}
-	c.JSON(200, gin.H{
-		"rollout Status": rolloutStatus,
-		"message":        message,
-	})
 
 }
