@@ -10,7 +10,7 @@ KubectlDB is a web server which runs kubectl commands and stores the API calls a
 - Connection to a Kubernetes cluster with read/write privileges to create and read objects (https://minikube.sigs.k8s.io/docs/start/)
 - PostgreSQL database (optional, https://www.postgresql.org/download/)
 - git and access to download from github (https://git-scm.com/downloads)
-- download and install Golang 1.16 or higher (https://go.dev/doc/install)
+- download and install Golang 1.18 or higher (https://go.dev/doc/install)
 - A REST API Client (e.g Postman https://www.postman.com/downloads/)
 
 
